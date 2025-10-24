@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thuesday | A Digital Space</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Load Lucide Icons (used for social links) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Custom font for a clean, modern serif look */
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1&display=swap');
+        
+        /* Define custom Tailwind configuration */
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary-bg': '#1C1917', /* Dark Card Background */
+                        'primary-text': '#F0F0F0', /* Light Text for high contrast */
+                        'accent-btn': '#6b5d90', /* Soft Purple/Blue for accents */
+                        'sky-bg': '#12121c', /* Deep Night Blue Sky */
+                    }
+                    fontFamily {
+                        serif: {'"Playfair Display"', 'serif'};
+                        sans: {'Inter', 'sans-serif'};
+                    }
+                }
+            }
+        }
+
+        /* Basic container styling to apply the dark, animated background */
+        body {
+            background-color: #12121c; /* Deep night base */
+            font-family: 'Inter', sans-serif;
+            color: #F0F0F0; /* Default text is light */
+            overflow-x: hidden; /* Prevent horizontal scroll from animation */
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        /* --- Starry Night Animation CSS --- */
+        @keyframes subtle-move {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(5px, 5px); }
+            100% { transform: translate(0, 0); }
+        }
+        @keyframes shooting-star {
+            0% { transform: translate(100vw, -100px) rotate(-45deg); opacity: 0; }
+            1% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { transform: translate(-100px, 100vh) rotate(-45deg); opacity: 0; }
+        }
+
+        .stars-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; pointer-events: none;
+        }
+        .star-layer {
+            position: absolute; top: 0; left: 0; width: 2000px; height: 2000px; background: transparent;
+        }
+        .star-layer-1 {
+            width: 1px; height: 1px;
+            box-shadow: 
+                10px 10px #f0f0f0, 50px 80px #f0f0f0, 100px 150px #f0f0f0, 150px 20px #f0f0f0, 200px 220px #f0f0f0, 250px 30px #f0f0f0, 300px 250px #f0f0f0, 350px 180px #f0f0f0, 400px 50px #f0f0f0, 450px 300px #f0f0f0,
+                500px 100px #f0f0f0, 550px 130px #f0f0f0, 600px 200px #f0f0f0, 650px 320px #f0f0f0, 700px 40px #f0f0f0, 750px 270px #f0f0f0, 800px 110px #f0f0f0, 850px 230px #f0f0f0, 900px 60px #f0f0f0, 950px 190px #f0f0f0,
+                10px 410px #f0f0f0, 50px 520px #f0f0f0, 100px 630px #f0f0f0, 150px 740px #f0f0f0, 200px 450px #f0f0f0, 250px 600px #f0f0f0, 300px 700px #f0f0f0, 350px 400px #f0f0f0, 400px 550px #f0f0f0, 450px 650px #f0f0f0,
+                500px 750px #f0f0f0, 550px 420px #f0f0f0, 600px 580px #f0f0f0, 650px 680px #f0f0f0, 700px 780px #f0f0f0, 750px 460px #f0f0f0, 800px 510px #f0f0f0, 850px 620px #f0f0f0, 900px 730px #f0f0f0, 950px 480px #f0f0f0,
+                1000px 100px #f0f0f0, 1100px 300px #f0f0f0, 1200px 500px #f0f0f0, 1300px 700px #f0f0f0, 1400px 900px #f0f0f0, 1500px 1100px #f0f0f0, 1600px 1300px #f0f0f0, 1700px 1500px #f0f0f0, 1800px 1700px #f0f0f0, 1900px 1900px #f0f0f0;
+            animation: subtle-move 120s linear infinite alternate;
+        }
+        .star-layer-2 {
+            width: 2px; height: 2px;
+            box-shadow: 
+                120px 30px #f0f0f0, 240px 160px #f0f0f0, 360px 40px #f0f0f0, 480px 210px #f0f0f0, 600px 80px #f0f0f0, 720px 300px #f0f0f0, 840px 140px #f0f0f0, 960px 280px #f0f0f0,
+                120px 500px #f0f0f0, 240px 650px #f0f0f0, 360px 750px #f0f0f0, 480px 490px #f0f0f0, 600px 690px #f0f0f0, 720px 790px #f0f0f0, 840px 590px #f0f0f0, 960px 700px #f0f0f0,
+                100px 1000px #f0f0f0, 300px 1300px #f0f0f0, 500px 1600px #f0f0f0, 700px 1900px #f0f0f0, 900px 1250px #f0f0f0, 1100px 100px #f0f0f0, 1300px 300px #f0f0f0, 1500px 500px #f0f0f0, 1700px 700px #f0f0f0, 1900px 900px #f0f0f0;
+            animation: subtle-move 180s linear infinite alternate reverse;
+        }
+
+        .falling-star {
+            position: absolute; top: 0; right: 0; width: 150px; height: 2px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0), #ffffff); 
+            opacity: 0; z-index: 1; animation: shooting-star 8s linear infinite; 
+        }
+        .falling-star-1 { animation-delay: 5s; }
+        .falling-star-2 { animation-delay: 15s; width: 100px; height: 1px; }
+        .falling-star-3 { animation-delay: 25s; animation-duration: 6s; }
+        /* --- End Starry Night Animation CSS --- */
+
+
+        /* Style for the decorative section headers */
+        .section-tag {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            padding: 0.25rem 1rem;
+            border: 2px solid #F0F0F0;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            line-height: 1;
+        }
+
+        /* Styles for the button links (Profile View) */
+        .nav-btn {
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.5rem 1.5rem;
+            border: 1px solid #F0F0F0;
+            background-color: transparent;
+            color: #F0F0F0;
+            text-transform: uppercase;
+            border-radius: 9999px;
+            transition: all 0.2s ease;
+        }
+        .nav-btn:hover {
+            background-color: #6b5d90;
+            color: #F0F0F0;
+            border-color: #6b5d90;
+        }
+        
+        /* Custom style for form inputs (Registration View) */
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #4a4a58; 
+            background-color: #2a2a35;
+            color: #F0F0F0;
+            border-radius: 0.5rem; 
+            transition: all 0.2s;
+        }
+        .form-input:focus {
+            border-color: #6b5d90;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(107, 93, 144, 0.5);
+        }
+        
+        /* Custom style for the submit button (Registration View) */
+        .submit-btn {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            font-weight: 700;
+            background-color: #6b5d90;
+            color: #1C1917; 
+            border-radius: 0.5rem;
+            transition: background-color 0.2s, transform 0.1s;
+            box-shadow: 0 4px #4a3e63;
+            text-transform: uppercase;
+        }
+        .submit-btn:hover {
+            background-color: #7b6e9c;
+            transform: translateY(-1px);
+            box-shadow: 0 5px #4a3e63;
+        }
+        .submit-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px #4a3e63;
+        }
+
+        /* Transition setup for view switching */
+        .view-transition {
+            transition: opacity 0.4s ease-in-out;
+        }
+        
+        /* Styling for the centered registration form when active */
+        #register-view-container {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 2rem;
+            z-index: 50; /* Above the main profile content */
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none; /* Ignore clicks when hidden */
+        }
+        
+        #register-view-container.active {
+            display: flex;
+            opacity: 1;
+            pointer-events: auto; /* Allow clicks when active */
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            color: #6b5d90;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+        .back-link:hover {
+            color: #F0F0F0;
+        }
+        
+        /* Custom Modal for Confirmation */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s;
+        }
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background-color: #1C1917;
+            padding: 2.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            max-width: 90%;
+            width: 400px;
+            text-align: center;
+        }
+        .modal-button {
+            background-color: #6b5d90;
+            color: #1C1917;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            transition: background-color 0.2s;
+        }
+        .modal-button:hover {
+            background-color: #7b6e9c;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- STAR ANIMATION CONTAINER -->
+    <div class="stars-container">
+        <div class="star-layer star-layer-1"></div>
+        <div class="star-layer star-layer-2"></div>
+        <div class="falling-star falling-star-1"></div>
+        <div class="falling-star falling-star-2"></div>
+        <div class="falling-star falling-star-3"></div>
+    </div>
+    <!-- END STAR ANIMATION CONTAINER -->
+
+
+    <!-- ============================================== -->
+    <!-- 1. MAIN PROFILE / AUTOBIOGRAPHY VIEW -->
+    <!-- ============================================== -->
+    <div id="profile-view" class="view-transition max-w-4xl mx-auto p-6 md:p-12 lg:p-16 bg-primary-bg/90 backdrop-blur-sm rounded-xl shadow-2xl relative z-10 my-8">
+
+        <!-- Header/Banner Section -->
+        <header class="text-center mb-12 py-8 bg-accent-btn rounded-xl shadow-lg">
+            <h1 class="font-serif text-3xl md:text-4xl font-bold tracking-wider text-primary-text">
+                A DIGITAL SPACE
+            </h1>
+            <p class="mt-2 text-sm text-primary-text/80">
+                Welcome to the portfolio of Thuesday
+            </p>
+        </header>
+
+        <!-- Profile Introduction Section -->
+        <section id="intro" class="mb-16 flex flex-col md:flex-row gap-8 items-center">
+            
+            <!-- Image (Placeholder for the Grayscale Portrait) -->
+            <div class="w-full md:w-1/3 flex justify-center md:justify-start">
+                <img 
+                    src="my picture.jpg" 
+                    alt="A stylish, contemplative portrait of Thuesday in grayscale." 
+                    class="rounded-lg shadow-xl object-cover w-full h-auto max-w-xs md:max-w-full aspect-[3/4] border-4 border-accent-btn"
+                    onerror="this.onerror=null; this.src='https://placehold.co/300x400/555/FFF?text=Image\nNot\nFound';"
+                />
+            </div>
+
+            <!-- Intro Text & Navigation -->
+            <div class="w-full md:w-2/3 md:pl-8 text-center md:text-left">
+                <h2 class="font-serif text-5xl md:text-7xl font-bold italic mb-6 text-primary-text leading-tight">
+                    Hi, I'm Thuesday
+                </h2>
+
+                <p class="font-sans text-lg mb-8 max-w-md md:max-w-none mx-auto md:mx-0">
+                    I'm a dreamer who loves to create, explore, and bring ideas to life. I believe that every challenge is an opportunity to grow and that imagination can turn even the smallest idea into something beautiful.
+                </p>
+
+                <!-- Navigation Buttons: Now calls switchView('register') -->
+                <div class="flex flex-wrap justify-center md:justify-start gap-4">
+                    <a href="#about" class="nav-btn">About Me</a>
+                    <a href="#connect" class="nav-btn">Connect With Me</a>
+                    <button onclick="switchView('register')" class="nav-btn bg-accent-btn text-primary-bg border-accent-btn hover:bg-white hover:text-accent-btn">
+                        Register
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Me Details Section -->
+        <section id="about" class="mb-16 pt-8 border-t border-primary-text/20">
+            <div class="section-tag">About Me</div>
+            
+            <p class="font-sans text-xl leading-relaxed">
+                As a passionate creator, my journey is defined by the pursuit of turning abstract concepts into tangible realities. I view every project, challenge, or new skill as an opportunity to expand my boundaries. Whether it's through art, technology, or writing, the goal remains the same: to find the unique spark of beauty and potential in every idea, no matter how small, and nurture it into something meaningful. This philosophy drives my exploration and dedication to continuous growth.
+            </p>
+        </section>
+
+        <!-- Connect With Me Section -->
+        <section id="connect" class="mb-16 pt-8 border-t border-primary-text/20">
+            <div class="section-tag">Connect With Me</div>
+
+            <div class="flex flex-col space-y-4 max-w-sm mx-auto md:mx-0">
+                
+                <!-- Social Link Item: Facebook -->
+                <a href="https://www.facebook.com/thuesdaysmith.amancio/" target="_blank" class="flex items-center space-x-4 p-4 rounded-lg bg-accent-btn hover:bg-accent-btn/80 transition duration-200">
+                    <i data-lucide="facebook" class="w-6 h-6 text-primary-text"></i>
+                    <span class="text-lg font-semibold text-primary-text">Facebook</span>
+                </a>
+
+                <!-- Social Link Item: Instagram -->
+                <a href="https://www.instagram.com/" target="_blank" class="flex items-center space-x-4 p-4 rounded-lg bg-accent-btn hover:bg-accent-btn/80 transition duration-200">
+                    <i data-lucide="instagram" class="w-6 h-6 text-primary-text"></i>
+                    <span class="text-lg font-semibold text-primary-text">Instagram</span>
+                </a>
+
+                <!-- Social Link Item: Gmail -->
+                <a href="https://mail.google.com/mail/u/0/?tab=rm&ogbl#inbox" target="_blank" class="flex items-center space-x-4 p-4 rounded-lg bg-accent-btn hover:bg-accent-btn/80 transition duration-200">
+                    <i data-lucide="mail" class="w-6 h-6 text-primary-text"></i>
+                    <span class="text-lg font-semibold text-primary-text">Email</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center pt-8 border-t border-primary-text/10 text-sm text-primary-text/70">
+            &copy; 2024 Thuesday. All Rights Reserved.
+        </footer>
+
+    </div>
+    
+    
+    <!-- ============================================== -->
+    <!-- 2. REGISTRATION FORM VIEW (Hidden by default) -->
+    <!-- ============================================== -->
+    <div id="register-view-container" class="view-transition">
+        <!-- Main Content Container: The Registration Card -->
+        <div class="w-full max-w-sm p-8 md:p-10 bg-primary-bg/90 backdrop-blur-sm rounded-xl shadow-2xl">
+    
+            <!-- Link back to the main profile page -->
+            <button onclick="switchView('profile')" class="back-link">
+                &larr; Back to Profile
+            </button>
+    
+            <!-- Header -->
+            <header class="text-center mb-10">
+                <h1 class="font-serif text-4xl font-bold text-accent-btn mb-2">
+                    Join the Constellation
+                </h1>
+                <p class="text-primary-text/80 text-sm">
+                    Register for your digital space.
+                </p>
+            </header>
+    
+            <!-- Registration Form -->
+            <form onsubmit="handleRegistrationSubmit(event)" class="space-y-6">
+                
+                <!-- Full Name Field -->
+                <div>
+                    <label for="name" class="block text-sm font-medium mb-1 text-primary-text/70">Full Name</label>
+                    <input type="text" id="name" name="name" placeholder="Thuesday Smith" required class="form-input">
+                </div>
+    
+                <!-- Email Field -->
+                <div>
+                    <label for="email" class="block text-sm font-medium mb-1 text-primary-text/70">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="email@space.com" required class="form-input">
+                </div>
+    
+                <!-- Password Field -->
+                <div>
+                    <label for="password" class="block text-sm font-medium mb-1 text-primary-text/70">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Create a strong password" required class="form-input">
+                </div>
+    
+                <!-- Confirm Password Field -->
+                <div>
+                    <label for="confirm-password" class="block text-sm font-medium mb-1 text-primary-text/70">Confirm Password</label>
+                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm your password" required class="form-input">
+                </div>
+    
+                <!-- Checkbox for Terms -->
+                <div class="flex items-start">
+                    <input id="terms" name="terms" type="checkbox" required class="mt-1 w-4 h-4 text-accent-btn bg-gray-700 border-gray-600 rounded focus:ring-accent-btn">
+                    <label for="terms" class="ml-2 text-sm text-primary-text/70 select-none">
+                        I agree to the <a href="#" class="text-accent-btn hover:text-white transition">Terms and Conditions</a>
+                    </label>
+                </div>
+    
+                <!-- Submit Button -->
+                <div>
+                    <button type="submit" class="submit-btn">
+                        Register Now
+                    </button>
+                </div>
+            </form>
+    
+            <!-- Login Link -->
+            <div class="text-center mt-6">
+                <p class="text-sm text-primary-text/60">
+                    Already part of the cosmos? 
+                    <button onclick="switchView('profile')" class="font-semibold text-accent-btn hover:text-white transition">Go to Profile</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- 3. CUSTOM MODAL (Replaces browser alert) -->
+    <!-- ============================================== -->
+    <div id="registration-modal" class="modal">
+        <div class="modal-content">
+            <i data-lucide="sparkles" class="w-10 h-10 text-accent-btn mx-auto mb-4"></i>
+            <h3 class="text-2xl font-serif font-bold text-primary-text mb-3">Registration Successful!</h3>
+            <p class="text-primary-text/80 mb-6">
+                Welcome to your digital space. In a real application, your data would now be securely saved.
+            </p>
+            <button onclick="closeModalAndReturnToProfile()" class="modal-button">
+                Continue to Profile
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+        
+        // --- View Switching Logic ---
+        
+        /**
+         * Switches the visible content between the main profile and the registration form.
+         * @param {string} view - 'profile' to show the main page, 'register' to show the form.
+         */
+        function switchView(view) {
+            const profileView = document.getElementById('profile-view');
+            const registerContainer = document.getElementById('register-view-container');
+
+            if (view === 'register') {
+                // 1. Hide profile content smoothly
+                profileView.style.opacity = '0';
+                profileView.style.pointerEvents = 'none';
+                
+                // 2. After transition, hide profile and show register view
+                setTimeout(() => {
+                    profileView.style.display = 'none';
+                    registerContainer.classList.add('active');
+                    // Scroll to top for a fresh view
+                    window.scrollTo(0, 0);
+                }, 400); // Wait for the opacity transition to finish (0.4s)
+
+            } else if (view === 'profile') {
+                // 1. Hide register view smoothly
+                registerContainer.classList.remove('active');
+                
+                // 2. After transition, show profile view
+                setTimeout(() => {
+                    profileView.style.display = 'block';
+                    // Trigger profile content fade-in
+                    setTimeout(() => {
+                        profileView.style.opacity = '1';
+                        profileView.style.pointerEvents = 'auto';
+                    }, 50);
+                    
+                    // Scroll to top for a fresh view
+                    window.scrollTo(0, 0);
+                }, 400);
+            }
+        }
+        
+        // --- Form Submission and Modal Logic (replaces alert) ---
+        
+        /**
+         * Handles the form submission, prevents default, and shows the custom modal.
+         * @param {Event} event - The form submission event.
+         */
+        function handleRegistrationSubmit(event) {
+            event.preventDefault();
+            
+            // In a real application, you would send the form data to a server here.
+            
+            // Reset the form after "successful" submission (optional)
+            event.target.reset(); 
+            
+            // Show the custom confirmation modal
+            const modal = document.getElementById('registration-modal');
+            modal.classList.add('active');
+        }
+
+        /**
+         * Closes the modal and returns the user to the profile view.
+         */
+        function closeModalAndReturnToProfile() {
+            const modal = document.getElementById('registration-modal');
+            modal.classList.remove('active');
+            
+            // Switch back to the main profile page
+            switchView('profile');
+        }
+    </script>
+</body>
+</html>
